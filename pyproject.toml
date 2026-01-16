@@ -1,0 +1,58 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "convert-audio"
+version = "0.1.0"
+description = "CLI to convert audio files using ffmpeg and transcribe using OpenAI Whisper"
+readme = "README.md"
+requires-python = ">=3.12"
+license = {text = "Apache-2.0"}
+authors = [
+    {name = "Your Name", email = "your.email@example.com"}
+]
+keywords = ["audio", "conversion", "ffmpeg", "transcription", "whisper", "cli"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+]
+
+dependencies = []
+
+[project.optional-dependencies]
+whisper = [
+    "openai-whisper>=20231117",
+]
+faster-whisper = [
+    "faster-whisper>=1.0.0",
+    "tqdm>=4.66.0",
+]
+whisperx = [
+    "whisperx>=3.0.0",
+    "tqdm>=4.66.0",
+    "python-dotenv>=1.0.0",
+]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+]
+
+[project.scripts]
+convert-audio = "convert_audio.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+convert_audio = ["py.typed"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --cov=convert_audio --cov-report=term-missing"
