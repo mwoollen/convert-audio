@@ -3,6 +3,11 @@
 import logging
 from pathlib import Path
 from typing import Optional, Literal
+import torch
+
+# Detect if GPU is available
+use_gpu = torch.cuda.is_available()
+   # do_diarize comes from CLI flag
 
 logger = logging.getLogger(__name__)
 
@@ -327,6 +332,12 @@ def transcribe_with_whisperx(
         return 1
 
     # Check diarization requirements
+
+       # do_diarize comes from CLI flag
+    if not use_gpu and diarize:
+        print("GPU not detected. Skipping speaker diarization for speed and compatibility.")
+        diarize = False
+
     if diarize and not hf_token:
         logger.error(
             "Speaker diarization requires a Hugging Face token. "
@@ -342,7 +353,7 @@ def transcribe_with_whisperx(
         compute_type = "float16" if device == "cuda" else "int8"
 
         model_obj = whisperx.load_model(model, device, compute_type=compute_type)
-        diarize_str = " with diarization" if diarize else ""
+        diarize_str = " with diarization" if diarize and do_diarize else ""
         logger.info(f"Using WhisperX backend on {device} (word-level timestamps{diarize_str})")
     except Exception as e:
         logger.error(f"Failed to load WhisperX model: {e}")
